@@ -1,7 +1,8 @@
 # sentry-cli-angular-debugid-repro
 
 **`sentry sourcemap inject` skips Angular 22.1 build output, so the `_sentryDebugIds` runtime snippet is never
-added and the SDK never learns the debug ID.**
+added and the SDK never learns the debug ID.** Reported in
+[getsentry/cli#1629](https://github.com/getsentry/cli/issues/1629).
 
 ```sh
 npm ci
