@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "repro": "ng build --source-map && sentry sourcemap inject dist/sentry-cli-angular-debugid-repro/browser && grep -L _sentryDebugIds dist/sentry-cli-angular-debugid-repro/browser/*.js"
+    "repro": "ng build --source-map && sentry sourcemap inject dist/sentry-cli-angular-debugid-repro/browser; grep -Hc _sentryDebugIds dist/sentry-cli-angular-debugid-repro/browser/*.js",
+    "control": "ng build --source-map && node strip-angular-debug-ids.mjs dist/sentry-cli-angular-debugid-repro/browser && sentry sourcemap inject dist/sentry-cli-angular-debugid-repro/browser; grep -Hc _sentryDebugIds dist/sentry-cli-angular-debugid-repro/browser/*.js"
   },
   "private": true,
   "packageManager": "npm@11.17.0",
