@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development"
+    "watch": "ng build --watch --configuration development",
+    "repro": "ng build --source-map && sentry sourcemap inject dist/sentry-cli-angular-debugid-repro/browser && grep -L _sentryDebugIds dist/sentry-cli-angular-debugid-repro/browser/*.js"
   },
   "private": true,
   "packageManager": "npm@11.17.0",
@@ -24,6 +25,7 @@
     "@angular/cli": "^22.1.7",
     "@angular/compiler-cli": "^22.1.0",
     "prettier": "^3.8.1",
+    "sentry": "0.45.0",
     "typescript": "~6.0.2"
   }
 }

@@ -1,59 +1,28 @@
-# SentryCliAngularDebugidRepro
+# sentry-cli-angular-debugid-repro
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.7.
+`sentry sourcemap inject` skips Angular 22.1 output, so the `_sentryDebugIds` runtime snippet is never added.
 
-## Development server
+The project is the unmodified output of `ng new --minimal` (`@angular/cli` 22.1.7, first commit). The second
+commit only adds the `sentry` CLI and a `repro` script.
 
-To start a local development server, run:
-
-```bash
-ng serve
+```sh
+npm ci
+npm run repro
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+`repro` runs `ng build --source-map`, then `sentry sourcemap inject` on the output, and finally lists every JS
+file that still has no `_sentryDebugIds` snippet.
 
-## Code scaffolding
+## Result
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```
+│ Files modified │ 0 │
+│ Files skipped  │ 1 │
+– dist/sentry-cli-angular-debugid-repro/browser/main-MD3FQKHN.js → 2b587950-0f21-54de-a811-573df9dc25b4
+dist/sentry-cli-angular-debugid-repro/browser/main-MD3FQKHN.js
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Since 22.1 ([angular/angular-cli#33110](https://github.com/angular/angular-cli/pull/33110)) `ng build` writes an
+ECMA-426 debug ID into every script that has a source map: a `//# debugId=` comment in the JS and a `debugId`
+field in the map. It does not write the `_sentryDebugIds` snippet. The CLI treats the comment as proof that the
+file is already injected and skips it, so the SDK never learns the ID and events carry no `debug_meta`.
